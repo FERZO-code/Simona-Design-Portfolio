@@ -1,0 +1,22 @@
+{
+  "arcano-xiii": {
+    "pages": 40,
+    "w": 1600,
+    "h": 1132
+  },
+  "aurum": {
+    "pages": 90,
+    "w": 1600,
+    "h": 1132
+  },
+  "casa-pantera": {
+    "pages": 60,
+    "w": 1600,
+    "h": 1132
+  },
+  "opuntia-terrace": {
+    "pages": 52,
+    "w": 1600,
+    "h": 1132
+  }
+}

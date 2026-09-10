@@ -1,0 +1,12 @@
+# I PDF originali dei book: sono le sorgenti, non servono al sito.
+# Il sito legge assets/books/, generato da questi file.
+# GitHub rifiuta i file oltre 100 MB e AURUM da solo ne pesa 212.
+Media/books/*.pdf
+
+# macOS
+.DS_Store
+
+# ambienti locali
+.venv/
+venv/
+node_modules/

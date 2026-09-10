@@ -1,0 +1,64 @@
+/* ============================================================
+   Un tema per book — colori e caratteri presi dal book stesso
+   Applicati con [data-book="slug"] su <html> (lettore) o sulla card (home)
+   ============================================================ */
+
+[data-book="casa-pantera"]{
+  --b-bg:      #1E0D26;
+  --b-bg-2:    #2A1233;
+  --b-surface: #3A1946;
+  --b-accent:  #C6A15B;
+  --b-accent-2:#8E6B36;
+  --b-ink:     #F2E9DC;
+  --b-muted:   rgba(242,233,220,.60);
+  --b-faint:   rgba(242,233,220,.28);
+  --b-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --b-body:    "Lato", system-ui, sans-serif;
+  --b-track:   .16em;
+  --b-weight:  400;
+}
+
+[data-book="aurum"]{
+  --b-bg:      #081A12;
+  --b-bg-2:    #0C1F17;
+  --b-surface: #14301F;
+  --b-accent:  #C9A227;
+  --b-accent-2:#8A7A2E;
+  --b-ink:     #EFE7D2;
+  --b-muted:   rgba(239,231,210,.62);
+  --b-faint:   rgba(239,231,210,.28);
+  --b-display: "Julius Sans One", "Optima", sans-serif;
+  --b-body:    "Cormorant Garamond", Georgia, serif;
+  --b-track:   .30em;
+  --b-weight:  400;
+}
+
+[data-book="arcano-xiii"]{
+  --b-bg:      #0B111B;
+  --b-bg-2:    #101722;
+  --b-surface: #1A2536;
+  --b-accent:  #8AA7C9;
+  --b-accent-2:#4C6890;
+  --b-ink:     #E7E3D9;
+  --b-muted:   rgba(231,227,217,.60);
+  --b-faint:   rgba(231,227,217,.26);
+  --b-display: "Italiana", Georgia, serif;
+  --b-body:    "Jost", system-ui, sans-serif;
+  --b-track:   .22em;
+  --b-weight:  300;
+}
+
+[data-book="opuntia-terrace"]{
+  --b-bg:      #F3DCCD;
+  --b-bg-2:    #EBCDB9;
+  --b-surface: #F8EAE0;
+  --b-accent:  #C4643C;
+  --b-accent-2:#8FA05C;
+  --b-ink:     #33422E;
+  --b-muted:   rgba(51,66,46,.72);
+  --b-faint:   rgba(51,66,46,.34);
+  --b-display: "Marcellus", Georgia, serif;
+  --b-body:    "Karla", system-ui, sans-serif;
+  --b-track:   .20em;
+  --b-weight:  400;
+}

@@ -1,0 +1,511 @@
+/* ============================================================
+   Home — Simona Barbone
+   ============================================================ */
+
+body{ background: var(--petrol-deep); }
+
+/* reticolo da tavola tecnica, appena percettibile */
+.grid-bg{
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(159,211,199,.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(159,211,199,.055) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(120% 90% at 50% 0%, #000 20%, transparent 78%);
+}
+
+/* ============ header ============ */
+.nav{
+  position: fixed; inset: 0 0 auto 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem max(4vw, 1.25rem);
+  transition: background-color .5s var(--ease), padding .5s var(--ease), backdrop-filter .5s;
+}
+.nav.is-stuck{
+  background: rgba(0,26,32,.82);
+  backdrop-filter: blur(14px) saturate(1.2);
+  padding-block: .7rem;
+  box-shadow: 0 1px 0 rgba(159,211,199,.14);
+}
+.nav__brand{ display:flex; align-items:center; gap:.8rem; }
+.nav__mark{ width: 44px; height: 44px; object-fit: contain; opacity:.95; }
+.nav__name{
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .26em;
+  text-transform: uppercase; color: var(--fg-muted); line-height:1.5;
+}
+.nav__name b{ display:block; color: var(--fg); font-weight:400; letter-spacing:.3em; }
+.nav__links{ display:flex; gap: clamp(1rem, 2.4vw, 2.4rem); align-items:center; }
+.nav__link{
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--fg-muted);
+  padding: .35rem 0; position: relative;
+  transition: color .35s var(--ease);
+}
+.nav__link::after{
+  content:""; position:absolute; left:0; right:100%; bottom:0; height:1px;
+  background: var(--patina); transition: right .45s var(--ease);
+}
+.nav__link:hover{ color: var(--fg); }
+.nav__link:hover::after{ right:0; }
+@media (max-width: 680px){ .nav__links .is-optional{ display:none; } }
+
+/* ============ hero ============ */
+.hero{
+  position: relative; z-index: 1;
+  min-height: 100svh;
+  display: grid; align-items: center;
+  padding: clamp(7rem, 14vh, 10rem) 0 clamp(3rem, 8vh, 5rem);
+}
+.hero::before{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background:
+    radial-gradient(90% 70% at 78% 34%, rgba(0,59,73,.95) 0%, transparent 62%),
+    radial-gradient(60% 50% at 8% 88%, rgba(159,211,199,.10) 0%, transparent 70%);
+}
+.hero__inner{
+  width: var(--shell); margin-inline:auto;
+  display: grid; gap: clamp(2.5rem, 6vw, 5rem);
+  grid-template-columns: minmax(0,.85fr) minmax(0,1.15fr);
+  align-items: center;
+}
+@media (max-width: 940px){
+  .hero__inner{ grid-template-columns: 1fr; }
+}
+.hero__eyebrow{ display:flex; align-items:center; gap:.75rem; margin-bottom: 1.6rem; }
+.hero__eyebrow::before{ content:""; width:clamp(28px,5vw,64px); height:1px; background: var(--patina-dim); }
+
+/* il nome funziona da logotipo: Cormorant leggero, più aperto e meno
+   meccanico del Bodoni che regge il resto del sito */
+.hero h1{
+  font-family: "Cormorant Garamond", "Cormorant", Georgia, serif;
+  font-size: clamp(3.6rem, 10.6vw, 9.6rem);
+  font-weight: 300;
+  letter-spacing: .004em;
+  line-height: .94;
+}
+.hero h1 .sur{
+  display:block;
+  font-style: italic;
+  margin-left: clamp(0px, 4vw, 3.2rem);
+  /* stesso colore di "Simona": il corsivo basta a distinguerlo */
+}
+.hero__lede{
+  max-width: 34ch;
+  margin: 1.9rem 0 2.4rem;
+  color: var(--fg-muted);
+  font-size: clamp(1rem, 1.05vw + .8rem, 1.22rem);
+  line-height: 1.66;
+}
+.hero__meta{ display:flex; flex-wrap:wrap; gap: 1.4rem 2.6rem; }
+.hero__meta div{ display:grid; gap:.3rem; }
+.hero__meta dt, .hero__meta .k{
+  font-family: var(--mono); font-size:.62rem; letter-spacing:.22em;
+  text-transform: uppercase; color: var(--fg-faint);
+}
+.hero__meta .v{ font-size:.95rem; color: var(--fg); letter-spacing:.02em; }
+
+/* ---- pila di copertine che si sfoglia ---- */
+/* minmax(0,1fr): senza, la riga di dettaglio della didascalia detta la larghezza
+   della colonna con il suo max-content e la pila sborda dal margine.
+   L'allineamento del testo lo fa text-align, non justify-items. */
+.stack-wrap{ display:grid; grid-template-columns: minmax(0, 1fr); gap:1.4rem; }
+
+.stack{
+  position: relative;
+  z-index: 1;              /* contiene le copertine: la didascalia resta sempre sopra */
+  width: 100%;
+  aspect-ratio: 1191 / 842;
+  /* la pila sborda sotto il proprio box — scarto verticale più inclinazione
+     dell'ultima copertina: ~9,8% della larghezza. Lo spazio va riservato,
+     altrimenti la didascalia finisce sotto le copertine. */
+  margin-bottom: 9.8%;
+  perspective: 2200px;
+  perspective-origin: 30% 50%;
+  cursor: pointer;
+}
+.stack__leaf{
+  position:absolute; inset:0;
+  transform-origin: right center;
+  transform-style: preserve-3d;
+  border-radius: 2px;
+  box-shadow: 0 26px 60px -20px rgba(0,0,0,.75), 0 2px 0 rgba(255,255,255,.06) inset;
+  transition: transform .95s var(--ease-io), opacity .5s linear .2s;
+  will-change: transform;
+  overflow: hidden;
+}
+.stack__leaf img{ width:100%; height:100%; object-fit: cover; }
+.stack__leaf::after{  /* ombra sul dorso, a destra */
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(270deg, rgba(0,0,0,.40) 0%, rgba(0,0,0,.08) 7%, transparent 20%);
+  pointer-events:none;
+}
+.stack__leaf.is-turning{ transform: rotateY(152deg); opacity: 0; }
+
+.stack__caption{
+  position: relative; z-index: 2;
+  display:grid; gap:.35rem; text-align:right;
+  min-height: 3.4rem;
+}
+@media (max-width: 940px){ .stack__caption{ text-align:left; } }
+.stack__title{
+  font-family: var(--display); font-size: clamp(1.3rem,2.2vw,1.9rem);
+  letter-spacing:.02em; line-height:1.1;
+}
+.stack__hint{ font-family: var(--mono); font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color: var(--fg-faint); }
+/* su schermi che si toccano il testo è più corto, e si tocca invece di cliccare */
+.stack__hint .on-touch{ display: none; }
+@media (hover: none){
+  .stack__hint .on-hover{ display: none; }
+  .stack__hint .on-touch{ display: inline; }
+}
+
+/* ============ sezioni ============ */
+.section{ position:relative; z-index:1; padding: clamp(5rem, 11vh, 9rem) 0; }
+.section__head{
+  width: var(--shell); margin-inline:auto;
+  display:grid; gap: 1.1rem;
+  margin-bottom: clamp(2.6rem, 5vw, 4.2rem);
+}
+.section__head h2{
+  font-size: clamp(2.1rem, 4.6vw, 4rem);
+  letter-spacing: -.01em;
+}
+/* interruzione di riga che diventa uno spazio quando la sezione si compatta */
+.brk{ display: block; height: 0; font-style: normal; }
+.section__head p{ max-width: 52ch; color: var(--fg-muted); margin:0; }
+.section__head p.label{ max-width:none; color: var(--patina-dim); }
+
+/* ============ i book ============ */
+.tavole{
+  width: var(--shell); margin-inline:auto;
+  display:grid; gap: clamp(1.4rem, 2.4vw, 2.2rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+}
+.book{
+  position:relative;
+  display:grid; grid-template-rows: auto 1fr;
+  background: var(--b-bg-2);
+  color: var(--b-ink);
+  font-family: var(--b-body);
+  border: 1px solid color-mix(in srgb, var(--b-ink) 12%, transparent);
+  overflow:hidden;
+  isolation:isolate;
+  transition: transform .7s var(--ease), box-shadow .7s var(--ease);
+}
+.book:hover, .book:focus-within{
+  transform: translateY(-6px);
+  box-shadow: 0 40px 80px -34px rgba(0,0,0,.8);
+}
+.book__cover{
+  position:relative;
+  aspect-ratio: 1191/842;
+  perspective: 1150px;
+  background: var(--b-bg);
+  overflow:hidden;
+}
+.book__under{ position:absolute; inset:0; }
+.book__under img{ width:100%; height:100%; object-fit:cover; }
+.book__under::after{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,.12) 26%, transparent 55%);
+}
+.book__leaf{
+  position:absolute; inset:0;
+  transform-origin: left center;
+  transition: transform 1s var(--ease-io), box-shadow 1s var(--ease);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+.book__leaf img{ width:100%; height:100%; object-fit:cover; }
+.book__leaf::after{
+  content:""; position:absolute; inset:0; opacity:0;
+  background: linear-gradient(90deg, transparent 40%, rgba(0,0,0,.45));
+  transition: opacity 1s var(--ease);
+}
+.book:hover .book__leaf, .book:focus-within .book__leaf{
+  transform: rotateY(-38deg);
+  box-shadow: 26px 0 52px -14px rgba(0,0,0,.85);
+}
+.book:hover .book__leaf::after, .book:focus-within .book__leaf::after{ opacity:1; }
+
+.book__tag{
+  position:absolute; z-index:3; left:0; top:0;
+  display:flex; gap:.7rem; align-items:center;
+  padding:.5rem .9rem;
+  background: color-mix(in srgb, var(--b-bg) 82%, transparent);
+  backdrop-filter: blur(6px);
+  font-family: var(--mono); font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+  color: var(--b-accent);
+}
+
+.book__body{ display:grid; gap:1.1rem; padding: clamp(1.5rem, 2.4vw, 2.2rem); align-content:start; }
+.book__title{
+  font-family: var(--b-display);
+  font-weight: var(--b-weight);
+  font-size: clamp(1.8rem, 3.1vw, 2.7rem);
+  letter-spacing: var(--b-track);
+  text-transform: uppercase;
+  line-height: 1.08;
+  color: var(--b-ink);
+  margin:0;
+}
+.book__sub{
+  font-family: var(--mono); font-size:.64rem; letter-spacing:.18em;
+  text-transform:uppercase; color: var(--b-accent);
+}
+.book__blurb{ margin:0; color: var(--b-muted); font-size:.98rem; line-height:1.68; }
+
+.book__swatches{ display:flex; gap:.4rem; align-items:center; }
+.book__swatches i{
+  width: 26px; height: 8px; display:block;
+  border: 1px solid color-mix(in srgb, var(--b-ink) 22%, transparent);
+}
+.book__foot{
+  display:flex; align-items:baseline; justify-content:space-between; gap:1rem;
+  border-top: 1px solid color-mix(in srgb, var(--b-ink) 14%, transparent);
+  padding-top: 1.1rem; margin-top:.3rem;
+}
+.book__pages{ font-family: var(--mono); font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color: var(--b-faint); }
+.book__cta{
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-family: var(--mono); font-size:.7rem; letter-spacing:.18em; text-transform:uppercase;
+  color: var(--b-accent);
+}
+.book__cta span{ transition: transform .5s var(--ease); display:inline-block; }
+.book:hover .book__cta span{ transform: translateX(6px); }
+.book__link{ position:absolute; inset:0; z-index:4; }
+
+/* ============ profilo ============ */
+.about{
+  background: var(--gesso);
+  color: var(--petrol-ink);
+  position:relative; z-index:1;
+}
+.about .label{ color: color-mix(in srgb, var(--petrol) 62%, transparent); }
+.about__inner{
+  width: var(--shell); margin-inline:auto;
+  display:grid; gap: clamp(2.2rem, 5vw, 4.5rem);
+  grid-template-columns: minmax(0,.72fr) minmax(0,1fr);
+  align-items:center;
+}
+@media (max-width: 880px){ .about__inner{ grid-template-columns:1fr; } }
+
+.about__figure{
+  position:relative;
+  margin:0;
+  width:100%;
+  max-width: 470px;
+  aspect-ratio: 4/5;
+  background: linear-gradient(168deg, var(--petrol) 0%, var(--petrol-deep) 100%);
+  border: 1px solid color-mix(in srgb, var(--petrol) 40%, transparent);
+  overflow:hidden;
+  display:flex; align-items:flex-end; justify-content:center;
+}
+.about__figure img{
+  width:auto; height: 100%;
+  object-fit: contain; object-position: bottom;
+}
+/* quota di riferimento sul pannello */
+.about__figure figcaption{
+  position:absolute; left:1rem; bottom:1rem; z-index:2;
+  font-family: var(--mono); font-size:.58rem; letter-spacing:.2em;
+  text-transform:uppercase; color: rgba(233,229,219,.6);
+}
+.about__text h2{
+  color: var(--petrol);
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  margin-bottom: 1.4rem;
+}
+.about__text p{ max-width: 56ch; color: color-mix(in srgb, var(--petrol-ink) 78%, transparent); }
+.about__text p + p{ margin-top: 1rem; }
+
+.scheda{
+  margin-top: 2.4rem;
+  border-top: 1px solid color-mix(in srgb, var(--petrol) 26%, transparent);
+}
+.scheda div{
+  display:grid; grid-template-columns: 12ch 1fr; gap:1.4rem;
+  padding: .78rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--petrol) 14%, transparent);
+}
+.scheda dt{
+  font-family: var(--mono); font-size:.62rem; letter-spacing:.2em;
+  text-transform:uppercase; color: color-mix(in srgb, var(--petrol) 60%, transparent);
+  padding-top:.28rem;
+}
+.scheda dd{ margin:0; color: var(--petrol-ink); font-size:.98rem; }
+
+/* ============ contatti ============ */
+.contact{ background: var(--petrol-ink); }
+.contact__inner{ width: var(--shell); margin-inline:auto; display:grid; gap:2.4rem; }
+.contact__mail{
+  font-family: var(--display);
+  font-size: clamp(1.7rem, 6.2vw, 4.6rem);
+  letter-spacing:-.01em;
+  display:inline-block;
+  background-image: linear-gradient(var(--patina), var(--patina));
+  background-size: 0% 1px; background-position: 0 100%; background-repeat: no-repeat;
+  transition: background-size .7s var(--ease), color .5s var(--ease);
+  overflow-wrap: anywhere;
+}
+.contact__mail:hover{ color: var(--patina); background-size: 100% 1px; }
+.contact__row{ display:flex; flex-wrap:wrap; gap:1rem 2.4rem; }
+
+/* ============ footer ============ */
+.foot{
+  background: var(--petrol-ink);
+  border-top: 1px solid rgba(159,211,199,.16);
+  padding: clamp(2.6rem,6vw,4rem) 0 2rem;
+}
+.foot__inner{
+  width: var(--shell); margin-inline:auto;
+  display:grid; gap: 2.6rem;
+  grid-template-columns: 1fr auto;
+  align-items:end;
+}
+@media (max-width: 720px){ .foot__inner{ grid-template-columns:1fr; } }
+.foot__mark{ width:64px; opacity:.9; margin-bottom:1rem; }
+.foot__acc{
+  display:grid; gap:.9rem; justify-items:end;
+}
+@media (max-width: 720px){ .foot__acc{ justify-items:start; } }
+.foot__acc a{
+  display:inline-flex; align-items:center; gap:1rem;
+  padding: .9rem 1.2rem;
+  border: 1px solid rgba(159,211,199,.22);
+  transition: border-color .5s var(--ease), background-color .5s var(--ease);
+}
+.foot__acc a:hover{ border-color: var(--patina); background: rgba(159,211,199,.06); }
+.foot__acc img{ width: 132px; }
+.foot__legal{
+  width: var(--shell); margin: 2.6rem auto 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(159,211,199,.12);
+  display:flex; flex-wrap:wrap; gap:.6rem 1.6rem; justify-content:space-between;
+}
+
+/* ============ ritocchi per schermi piccoli ============ */
+@media (max-width: 600px){
+  .nav__name{ display:none; }
+  .nav__mark{ width: 38px; height: 38px; }
+  .nav__links{ gap: 1.1rem; }
+  .nav__link{ white-space: nowrap; font-size: .64rem; letter-spacing:.14em; }
+  .hero{ padding: 5.6rem 0 2rem; }
+  .hero h1 .sur{ margin-left: 0; }
+  /* pila e didascalia più vicine, per tenere la riga del titolo in vista */
+  .stack-wrap{ gap: .9rem; }
+  .stack__caption{ min-height: 0; }
+  .quota{ display:none; }
+  .about__figure{ max-width:none; }
+  .scheda div{ grid-template-columns: 1fr; gap:.2rem; }
+}
+
+/* ============================================================
+   Da desktop la sezione tiene i quattro book in una schermata:
+   due sopra, due sotto. Le schede prendono l'altezza della riga e
+   mantengono le proporzioni della copertina, così non si ritaglia nulla.
+   A riposo si vede solo la copertina — che il titolo lo porta già stampato;
+   il progetto si racconta al passaggio del mouse.
+   ============================================================ */
+@media (min-width: 1024px) and (min-height: 680px) and (hover: hover){
+  #book{
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    padding: clamp(5rem, 10vh, 6.8rem) 0 clamp(1.6rem, 3.6vh, 2.8rem);
+  }
+  #book .section__head{
+    display: flex; flex-wrap: wrap;
+    align-items: flex-start; gap: .7rem 3rem;
+    margin-bottom: clamp(.9rem, 2.2vh, 1.7rem);
+  }
+  #book .section__head > .label{ flex: 0 0 100%; }
+  #book .section__head h2{ font-size: clamp(1.65rem, 2.4vw, 2.3rem); }
+  #book .section__head .brk{ display: inline; }
+  /* il testo si appoggia al margine destro, allineato sotto al titolo:
+     l'occhio va dal titolo alla riga di copertine senza inciampi */
+  #book .section__head p:not(.label){
+    margin-left: auto;
+    max-width: 42ch;
+    text-align: right;
+    font-size: .87rem; line-height: 1.5;
+    color: var(--fg-muted);
+  }
+
+  .tavole{
+    height: 100%;
+    grid-template-columns: repeat(2, auto);
+    grid-auto-rows: minmax(0, 1fr);
+    justify-content: center;
+    gap: clamp(.9rem, 1.5vw, 1.5rem);
+  }
+
+  .book{
+    display: block;
+    height: 100%;
+    aspect-ratio: 1191 / 842;
+    max-width: 100%;
+  }
+  .book:hover, .book:focus-within{ transform: none; }
+  .book__cover{ position: absolute; inset: 0; aspect-ratio: auto; }
+
+  .book__body{
+    position: absolute; z-index: 3;
+    inset: 0;
+    display: grid; align-content: end; gap: .45rem;
+    padding: clamp(.9rem, 1.4vw, 1.4rem);
+  }
+  /* velo permanente, solo per tenere leggibile la riga in basso */
+  .book__body::after{
+    content: ""; position: absolute; z-index: -1;
+    left: 0; right: 0; bottom: 0; height: 38%;
+    background: linear-gradient(to top,
+      color-mix(in srgb, var(--b-bg) 78%, transparent) 0%,
+      transparent 100%);
+  }
+  /* velo al passaggio: pesa in basso, così sopra si vede il foglio sollevarsi */
+  .book__body::before{
+    content: ""; position: absolute; z-index: -1; inset: 0;
+    background: linear-gradient(to top,
+      color-mix(in srgb, var(--b-bg) 97%, transparent) 0%,
+      color-mix(in srgb, var(--b-bg) 93%, transparent) 52%,
+      color-mix(in srgb, var(--b-bg) 74%, transparent) 68%,
+      color-mix(in srgb, var(--b-bg) 22%, transparent) 88%,
+      transparent 100%);
+    opacity: 0; transition: opacity .55s var(--ease);
+  }
+  .book:hover .book__body::before,
+  .book:focus-within .book__body::before{ opacity: 1; }
+
+  /* il titolo è già stampato sulla copertina: qui resta solo per i lettori di schermo */
+  .book__title{
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .book__sub, .book__blurb, .book__swatches{
+    max-height: 0; opacity: 0; overflow: hidden;
+    transform: translateY(8px);
+    transition: max-height .6s var(--ease), opacity .4s var(--ease), transform .55s var(--ease);
+  }
+  .book:hover :is(.book__sub, .book__blurb, .book__swatches),
+  .book:focus-within :is(.book__sub, .book__blurb, .book__swatches){
+    opacity: 1; transform: none;
+  }
+  .book:hover .book__sub, .book:focus-within .book__sub{ max-height: 3rem; }
+  .book:hover .book__blurb, .book:focus-within .book__blurb{ max-height: 9rem; }
+  .book:hover .book__swatches, .book:focus-within .book__swatches{ max-height: 1.4rem; }
+
+  .book__blurb{ font-size: .87rem; line-height: 1.55; }
+  /* in una riga sola ci sta il numero di pagine; le tavole sono nel cartiglio del lettore */
+  .book__tavole{ display: none; }
+
+  .book__foot{
+    border-top: 0; padding-top: 0; margin-top: .15rem;
+  }
+  .book__pages, .book__cta{
+    color: var(--b-ink);
+    text-shadow: 0 1px 12px color-mix(in srgb, var(--b-bg) 92%, transparent);
+  }
+  .book__cta{ color: var(--b-accent); }
+}

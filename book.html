@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sfoglia il book — Simona Barbone</title>
+<meta name="description" content="Sfoglia i book di progetto di Simona Barbone, pagina per pagina.">
+<link rel="icon" href="assets/img/sb-logo-dark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Jost:wght@200;300;400;500&family=IBM+Plex+Mono:wght@300;400&family=Cinzel:wght@400;500&family=Julius+Sans+One&family=Italiana&family=Marcellus&family=Lato:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Karla:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/themes.css">
+<link rel="stylesheet" href="assets/css/viewer.css">
+</head>
+<body class="reader">
+
+<div class="rload" id="rload"><p>Apertura del book</p></div>
+
+<header class="rhead">
+  <a class="rback" href="index.html"><span aria-hidden="true">←</span> Tutti i book</a>
+  <div class="rtitle">
+    <h1 id="bTitle">Book</h1>
+    <p id="bSub"></p>
+  </div>
+  <div class="rtools">
+    <button class="tool" id="btnThumbs" aria-pressed="false" aria-label="Indice delle pagine" title="Indice (T)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7"/><rect x="14" y="4" width="7" height="7"/><rect x="3" y="15" width="7" height="5"/><rect x="14" y="15" width="7" height="5"/></svg>
+    </button>
+    <button class="tool" id="btnZoom" aria-label="Ingrandisci la pagina" title="Zoom (Z)">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 10.5h5M10.5 8v5"/></svg>
+    </button>
+    <button class="tool" id="btnFull" aria-label="Schermo intero" title="Schermo intero (F)">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 15v5h-5M20 9V4h-5M4 15v5h5"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="rstage">
+  <div class="fb" id="fb">
+    <span class="fb__spine" aria-hidden="true"></span>
+
+    <div class="fb__page fb__page--under" id="under" aria-hidden="true">
+      <img alt="" id="underImg">
+      <span class="fb__underShade" id="underShade"></span>
+    </div>
+
+    <div class="fb__leaf" id="leaf">
+      <div class="fb__face fb__face--front">
+        <img id="frontImg" alt="">
+        <span class="fb__shade" id="frontShade"></span>
+      </div>
+      <div class="fb__face fb__face--back" aria-hidden="true">
+        <img id="backImg" alt="">
+      </div>
+    </div>
+
+    <button class="zone zone--prev" id="zPrev" aria-label="Pagina precedente">
+      <i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 5l-7 7 7 7"/></svg></i>
+    </button>
+    <button class="zone zone--next" id="zNext" aria-label="Pagina successiva">
+      <i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 5l7 7-7 7"/></svg></i>
+    </button>
+  </div>
+  <p class="rotate-hint">Ruota il telefono per vedere le tavole più grandi</p>
+</main>
+
+<footer class="rfoot">
+  <div class="scrub">
+    <div class="scrub__meta">
+      <span>Pagina <b id="pNow">1</b> / <span id="pTot">1</span></span>
+      <span id="pHint">Trascina il foglio · ← → per sfogliare · clic per ingrandire</span>
+    </div>
+    <div class="scrub__line" id="scrub" role="slider" tabindex="0" aria-label="Vai alla pagina" aria-valuemin="1" aria-valuenow="1" aria-valuemax="1">
+      <span class="scrub__ticks" id="ticks" aria-hidden="true"></span>
+      <span class="scrub__fill" id="fill"></span>
+      <span class="scrub__knob" id="knob"></span>
+    </div>
+  </div>
+  <dl class="cartiglio" id="cartiglio"></dl>
+</footer>
+
+<aside class="thumbs" id="thumbs" aria-label="Indice delle pagine">
+  <div class="thumbs__head">
+    <p id="thumbsLabel">Indice delle pagine</p>
+    <button class="tool" id="btnThumbsClose" aria-label="Chiudi l’indice">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="thumbs__strip" id="strip"></div>
+</aside>
+
+<div class="zoomer" id="zoomer" aria-hidden="true">
+  <img id="zoomImg" alt="">
+  <p class="zoomer__hint">Muovi per esplorare · clicca o Esc per chiudere</p>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/flipbook.js"></script>
+</body>
+</html>
