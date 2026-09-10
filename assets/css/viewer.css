@@ -322,3 +322,61 @@ body.reader > :is(.rhead, .rfoot){ position:relative; z-index:20; }
 @media (max-width: 760px) and (orientation: portrait){
   .rotate-hint{ display:block; }
 }
+
+/* ============================================================
+   Anteprima sulla linea di quota: la pagina sotto al cursore,
+   prima di arrivarci. Da mouse si segue il puntatore, da touch
+   compare mentre si trascina il cursore.
+   ============================================================ */
+.scrub__line{ touch-action: none; }
+.scrub__line.is-scrubbing .scrub__fill,
+.scrub__line.is-scrubbing .scrub__knob{ transition: none; }
+
+.peek{
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 0;
+  margin: 0;
+  width: 150px;
+  transform: translate(-50%, 6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .2s var(--ease), transform .28s var(--ease), visibility .2s;
+}
+.peek.is-on{ opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+
+.peek img{
+  display: block; width: 100%;
+  aspect-ratio: 1191 / 842;
+  object-fit: cover;
+  background: var(--b-surface);
+  border: 1px solid color-mix(in srgb, var(--b-accent) 55%, transparent);
+  box-shadow: 0 18px 34px -14px rgba(0,0,0,.8);
+}
+/* il numero sta dentro al riquadro, come nelle miniature dell'indice:
+   fuori finirebbe addosso alla riga di stato */
+.peek figcaption{
+  position: absolute; left: 0; bottom: 0;
+  padding: .18rem .42rem;
+  background: color-mix(in srgb, var(--b-bg) 82%, transparent);
+  font-family: var(--mono); font-size: .55rem;
+  letter-spacing: .1em;
+  color: var(--b-ink);
+}
+/* puntina verso la linea */
+.peek::after{
+  content: "";
+  position: absolute; left: 50%; bottom: -12px;
+  width: 1px; height: 8px; margin-left: -.5px;
+  background: color-mix(in srgb, var(--b-accent) 55%, transparent);
+}
+
+@media (max-width: 600px){
+  /* bersaglio più generoso per il dito, linea sempre centrata */
+  .scrub__line{ height: 30px; }
+  .peek{ width: 124px; bottom: calc(100% + 6px); }
+}
+@media (prefers-reduced-motion: reduce){
+  .peek{ transition: opacity .001ms, visibility .001ms; transform: translate(-50%, 0); }
+}

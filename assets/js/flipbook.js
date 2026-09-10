@@ -231,9 +231,11 @@
   function pctOf(n) { return N > 1 ? ((n - 1) / (N - 1)) * 100 : 0; }
 
   function sync() {
-    const pct = pctOf(idx);
-    fill.style.width = pct + "%";
-    knob.style.left = pct + "%";
+    if (!scrubbing) {
+      const pct = pctOf(idx);
+      fill.style.width = pct + "%";
+      knob.style.left = pct + "%";
+    }
     $("pNow").textContent = idx;
     scrub.setAttribute("aria-valuenow", idx);
     scrub.setAttribute("aria-valuemax", N);
@@ -246,15 +248,76 @@
     if (zoomOpen) $("zoomImg").src = zoomSrc(idx);
   }
 
-  const scrubTo = (e) => {
+  /* ---------- anteprima della pagina sulla linea di quota ---------- */
+  const peek = $("peek"), peekImg = $("peekImg"), peekNum = $("peekNum");
+  let peekPage = 0, scrubbing = false;
+
+  const pageAt = (clientX) => {
     const r = scrub.getBoundingClientRect();
-    goTo(Math.round(1 + ((e.clientX - r.left) / r.width) * (N - 1)));
+    const ratio = Math.min(Math.max((clientX - r.left) / r.width, 0), 1);
+    return Math.round(1 + ratio * (N - 1));
   };
-  scrub.addEventListener("click", scrubTo);
+
+  function showPeek(clientX) {
+    const r = scrub.getBoundingClientRect();
+    const n = pageAt(clientX);
+    if (n !== peekPage) {
+      peekPage = n;
+      peekImg.src = thumbSrc(book.slug, n);
+      peekNum.textContent = String(n).padStart(2, "0");
+    }
+    /* il riquadro resta dentro la linea, senza uscire dallo schermo */
+    const half = peek.offsetWidth / 2 + 4;
+    const x = Math.min(Math.max(clientX - r.left, half), r.width - half);
+    peek.style.left = x + "px";
+    peek.classList.add("is-on");
+  }
+
+  function hidePeek() {
+    peek.classList.remove("is-on");
+    peekPage = 0;
+  }
+
+  /* durante il trascinamento cursore e riempimento seguono il dito,
+     la pagina cambia solo al rilascio */
+  function paintScrub(n) {
+    const pct = pctOf(n);
+    fill.style.width = pct + "%";
+    knob.style.left = pct + "%";
+  }
+
+  scrub.addEventListener("pointermove", (e) => {
+    if (e.pointerType === "mouse" || scrubbing) showPeek(e.clientX);
+    if (scrubbing) paintScrub(pageAt(e.clientX));
+  });
+  scrub.addEventListener("pointerleave", () => { if (!scrubbing) hidePeek(); });
+
+  scrub.addEventListener("pointerdown", (e) => {
+    scrubbing = true;
+    scrub.classList.add("is-scrubbing");
+    scrub.setPointerCapture(e.pointerId);
+    showPeek(e.clientX);
+    paintScrub(pageAt(e.clientX));
+  });
+
+  function endScrub(e) {
+    if (!scrubbing) return;
+    scrubbing = false;
+    scrub.classList.remove("is-scrubbing");
+    if (scrub.hasPointerCapture(e.pointerId)) scrub.releasePointerCapture(e.pointerId);
+    const n = pageAt(e.clientX);
+    if (e.pointerType === "mouse") showPeek(e.clientX); else hidePeek();
+    goTo(n);
+    if (n === idx) sync();
+  }
+  scrub.addEventListener("pointerup", endScrub);
+  scrub.addEventListener("pointercancel", endScrub);
+
   scrub.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") { e.preventDefault(); goTo(idx + 1); }
     if (e.key === "ArrowLeft") { e.preventDefault(); goTo(idx - 1); }
   });
+  scrub.addEventListener("blur", hidePeek);
 
   /* ---------- indice miniature ---------- */
   const thumbs = $("thumbs"), strip = $("strip");
