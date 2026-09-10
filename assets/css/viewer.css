@@ -190,6 +190,7 @@ body.reader > :is(.rhead, .rfoot){ position:relative; z-index:20; }
   text-transform:uppercase; color: var(--b-faint);
 }
 .scrub__meta b{ color: var(--b-accent); font-weight:400; }
+#pHint .on-touch{ display: none; }
 .scrub__line{
   position:relative; height: 16px; cursor: pointer;
   display:flex; align-items:center;
@@ -309,7 +310,7 @@ body.reader > :is(.rhead, .rfoot){ position:relative; z-index:20; }
   .tool{ width: 36px; height: 36px; }
   .rtools{ gap:.3rem; }
   .rfoot{ padding: .6rem .9rem 1rem; }
-  #pHint{ display:none; }
+  #pHint{ display:none; }   /* su schermi stretti non c'è spazio */
   .thumb{ width: 96px; }
 }
 /* in verticale il foglio resta piccolo: suggerisci la rotazione */
@@ -372,9 +373,19 @@ body.reader > :is(.rhead, .rfoot){ position:relative; z-index:20; }
   background: color-mix(in srgb, var(--b-accent) 55%, transparent);
 }
 
+/* Il bersaglio segue il dito, non la larghezza dello schermo: su tablet
+   la linea da 16 px è quasi impossibile da centrare, e senza tocco
+   l'anteprima non compare mai. */
+@media (pointer: coarse){
+  .scrub__line{ height: 34px; }
+  /* niente "clic" dove si tocca */
+  #pHint .on-hover{ display: none; }
+  #pHint .on-touch{ display: inline; }
+  .scrub__knob{ height: 16px; }
+  .scrub__knob::after{ width: 12px; height: 12px; left: -5.5px; top: -5.5px; }
+}
+/* la dimensione del riquadro invece dipende dallo schermo */
 @media (max-width: 600px){
-  /* bersaglio più generoso per il dito, linea sempre centrata */
-  .scrub__line{ height: 30px; }
   .peek{ width: 124px; bottom: calc(100% + 6px); }
 }
 @media (prefers-reduced-motion: reduce){
