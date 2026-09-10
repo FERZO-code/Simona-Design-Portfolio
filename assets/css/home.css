@@ -50,6 +50,25 @@ body{ background: var(--petrol-deep); }
 .nav__link:hover::after{ right:0; }
 @media (max-width: 680px){ .nav__links .is-optional{ display:none; } }
 
+/* filetto di stacco fra le sezioni e il collegamento social */
+.nav__sep{
+  width:1px; height:16px;
+  background: rgba(159,211,199,.28);
+}
+.nav__social{
+  display:grid; place-items:center;
+  width: 34px; height: 34px;
+  margin-right: -6px;              /* riallinea l'icona al bordo ottico del menu */
+  color: var(--fg-muted);
+  transition: color .35s var(--ease), transform .35s var(--ease);
+}
+.nav__social svg{
+  width: 19px; height: 19px;
+  fill: none; stroke: currentColor; stroke-width: 1.35;
+  stroke-linejoin: round;
+}
+.nav__social:hover{ color: var(--patina); transform: translateY(-1px); }
+
 /* ============ hero ============ */
 .hero{
   position: relative; z-index: 1;
@@ -389,8 +408,11 @@ body{ background: var(--petrol-deep); }
 @media (max-width: 600px){
   .nav__name{ display:none; }
   .nav__mark{ width: 38px; height: 38px; }
-  .nav__links{ gap: 1.1rem; }
+  .nav__links{ gap: .9rem; }
   .nav__link{ white-space: nowrap; font-size: .64rem; letter-spacing:.14em; }
+  .nav__sep{ display:none; }
+  .nav__social{ width: 30px; height: 30px; margin-right: -4px; }
+  .nav__social svg{ width: 18px; height: 18px; }
   .hero{ padding: 5.6rem 0 2rem; }
   .hero h1 .sur{ margin-left: 0; }
   /* pila e didascalia più vicine, per tenere la riga del titolo in vista */
